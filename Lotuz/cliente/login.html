@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lotuz – Iniciar sesión / Registro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="logo-container">
+        <img src="../img/logo_lotus1.png" alt="Logo de Lotuz">
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="inicio.html">Inicio</a></li>
+          <li><a class="active" href="login.html">Perfil</a></li>
+          <li><a href="carrito.html">Carrito <span id="cartCount"></span></a></li>
+          <li><a href="productos.html">Productos</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="auth-main">
+      <div class="auth-card">
+        <!-- Login -->
+        <section id="viewLogin">
+          <h1 class="titulo-seccion">Iniciar sesión</h1>
+          <form id="loginForm" class="mt-3">
+            <div class="form-group">
+              <label for="loginEmail">Correo</label>
+              <input id="loginEmail" type="email" placeholder="tu@correo.com" required>
+            </div>
+            <div class="form-group">
+              <label for="loginPass">Contraseña</label>
+              <input id="loginPass" type="password" placeholder="********" required>
+            </div>
+            <div class="form-row">
+              <label class="remember"><input id="rememberMe" type="checkbox"> Recordarme</label>
+              <a class="forgot" href="#">Olvidé mi contraseña</a>
+            </div>
+            <button class="btn btn-primary" type="submit">Ingresar</button>
+          </form>
+          <p class="mt-3" style="text-align:center;">¿Eres nuevo aquí?
+            <a href="#" id="goRegister" class="forgot">Crea tu cuenta</a>
+          </p>
+          <div class="mt-3" style="text-align:center;">
+            <a class="forgot" href="inicio.html">Volver al inicio</a>
+          </div>
+        </section>
+
+        <!-- registro -->
+        <section id="viewRegister" style="display:none;">
+          <h1 class="titulo-seccion">Crear cuenta</h1>
+          <form id="registerForm" class="mt-3">
+            <div class="form-group">
+              <label for="regName">Nombre completo</label>
+              <input id="regName" type="text" placeholder="Tu nombre y apellido" required>
+            </div>
+            <div class="form-group">
+              <label for="regEmail">Correo</label>
+              <input id="regEmail" type="email" placeholder="tu@correo.com" required>
+              <small id="errRegEmail" class="error" style="display:none;">Correo inválido o ya registrado.</small>
+            </div>
+            <div class="form-group">
+              <label for="regPass">Contraseña</label>
+              <input id="regPass" type="password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+            </div>
+            <div class="form-group">
+              <label for="regRut">RUN / RUT (Chile)</label>
+              <input id="regRut" type="text" placeholder="12.345.678-5">
+              <small id="errRegRut" class="error" style="display:none;">RUT inválido.</small>
+            </div>
+            <div class="form-group">
+              <label for="regPhone">Teléfono</label>
+              <input id="regPhone" type="tel" placeholder="+56912345678">
+              <small id="errRegPhone" class="error" style="display:none;">Teléfono inválido.</small>
+            </div>
+            <div class="form-group">
+              <label for="regCountry">País</label>
+              <select id="regCountry" required>
+                <option value="">Selecciona tu país</option>
+                <option value="Chile" selected>Chile</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Perú">Perú</option>
+                <option value="México">México</option>
+                <option value="Colombia">Colombia</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="wrapRegion">
+              <label for="regRegion">Región</label>
+              <select id="regRegion" required></select>
+            </div>
+            <div class="form-group" id="wrapComuna">
+              <label for="regComuna">Comuna</label>
+              <select id="regComuna" required></select>
+            </div>
+
+            <div class="form-group" id="wrapRegionText" style="display:none;">
+              <label for="regRegionText">Región / Estado</label>
+              <input id="regRegionText" type="text" placeholder="Región / Estado">
+            </div>
+            <div class="form-group" id="wrapComunaText" style="display:none;">
+              <label for="regComunaText">Ciudad / Comuna</label>
+              <input id="regComunaText" type="text" placeholder="Ciudad / Comuna">
+            </div>
+
+            <div class="form-group">
+              <label for="regAddress">Dirección</label>
+              <input id="regAddress" type="text" placeholder="Calle 123, depto 45" required>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Crear cuenta</button>
+          </form>
+
+          <p class="mt-3" style="text-align:center;">¿Ya tienes cuenta?
+            <a href="#" id="goLogin" class="forgot">Inicia sesión</a>
+          </p>
+          <div class="mt-3" style="text-align:center;">
+            <a class="forgot" href="inicio.html">Volver al inicio</a>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="main-footer">
+      <p>© 2025 Lotuz. Todos los derechos reservados.</p>
+    </footer>
+  </div>
+
+  <script src="../js/auth.js"></script>
+  <script src="../js/login.js"></script>
+  <script src="../js/session.js"></script>
+</body>
+</html>

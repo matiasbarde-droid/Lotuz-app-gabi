@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lotuz - Detalle Producto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="logo-container">
+        <img src="../img/logo_lotus1.png" alt="Logo de Lotuz">
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="inicio.html">Inicio</a></li>
+          <li><a href="login.html">Perfil</a></li>
+          <li><a href="carrito.html">Carrito <span id="cartCount"></span></a></li>
+          <li><a class="active" href="productos.html">Productos</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="container" style="padding: 18px 16px 32px;">
+      <div class="card" style="padding:18px;">
+        <div style="display:grid; grid-template-columns: 320px 1fr; gap:24px; align-items:start;">
+          <img id="foto" alt="" style="width:100%; height:320px; object-fit:contain; background:#111; border-radius:12px;">
+          <div>
+            <h1 id="nombre" class="titulo-seccion" style="margin-top:0;"></h1>
+            <p><strong>Precio:</strong> <span id="precio"></span></p>
+            <p id="descripcion" style="color:#b6b6b6;"></p>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+              <button id="btnAdd" class="btn btn-primary">Agregar al carrito</button>
+              <a href="productos.html" class="btn btn-ghost">Volver a productos</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="main-footer">
+      <p>© 2025 Lotuz. Todos los derechos reservados.</p>
+    </footer>
+  </div>
+
+  <script src="../js/detalleProducto.js"></script>
+  <script src="../js/session.js"></script>
+</body>
+</html>
