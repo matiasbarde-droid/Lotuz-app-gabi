@@ -1,49 +1,36 @@
-# Lotuz Entrega 2
+# Lotuz Entrega 2 (estructura ordenada)
 
-Backend y frontend de Lotuz integrados en un único repositorio para la entrega 2.
+Este repositorio se organiza en dos carpetas para evitar desorden:
 
-## Estructura
-
-- `proyecto_Lotuz/` — Backend Spring Boot (Maven)
-- `src/`, `package.json` — Frontend Vite + React
-- `src/main/resources/static/openapi.json` — Especificación OpenAPI para Swagger UI
+- `Lotuz Entrega 2/` — Entrega actual (frontend React + backend Spring Boot)
+  - Frontend: `index.html`, `src/`, `public/`, `package.json`, `vite.config.js`
+  - Backend: `proyecto_Lotuz/` (Maven + Spring Boot)
+- `Lotuz Entrega 1/` — Contenido previo (sitio estático y materiales)
+  - Sitio legacy: `Lotuz/`
+  - Materiales: diagramas PNG, documento ERS
 
 ## Requisitos
-
 - Node.js 18+ y npm
 - Java 17+ (JDK)
-- Maven Wrapper incluido (`mvnw.cmd`)
+- Maven Wrapper (`mvnw.cmd`)
 
-## Ejecutar Frontend
-
+## Ejecutar Frontend (Entrega 2)
 ```bash
+cd "Lotuz Entrega 2"
 npm install
 npm run dev
 ```
+- Dev server: `http://localhost:5173` (o el puerto que asigne Vite)
 
-- Dev server: `http://localhost:5173` (puede variar según Vite)
-
-## Ejecutar Backend
-
+## Ejecutar Backend (Entrega 2)
 ```bash
+cd "Lotuz Entrega 2/proyecto_Lotuz"
 ./mvnw.cmd spring-boot:run -DskipTests
 ```
-
 - API base: `http://localhost:8080`
 - Swagger UI: `http://localhost:8080/swagger-ui/index.html`
 - OpenAPI: `http://localhost:8080/openapi.json`
 
-## Endpoints Documentados
-
-- Autenticación: `POST /api/auth/register`, `POST /api/auth/login`
-- Productos: `GET /api/productos`, `GET /api/productos/{sku}`
-- Checkout: `POST /api/checkout`
-
 ## Notas
-
 - Se usa `springdoc-openapi-starter-webmvc-ui` para servir Swagger UI.
 - Si aparece un warning de validación (Jakarta Bean Validation), agregar `hibernate-validator` en `pom.xml`.
-
-## Licencia
-
-Uso académico/educativo para la entrega; sin licencia explícita.
