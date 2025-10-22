@@ -27,7 +27,7 @@ const AdminGuard = ({ children }) => {
   // Verificar si el usuario está autenticado y tiene rol de administrador
   if (!user || (user.rol !== 'ADMIN' && user.rol !== 'SUPER_ADMIN')) {
     // Redirigir a la página de login si no tiene permisos
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
   
   // Si el usuario tiene permisos, renderizar los componentes hijos

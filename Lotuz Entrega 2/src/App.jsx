@@ -4,7 +4,7 @@ import { useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import AdminGuard from './components/common/AdminGuard';
 import AdminProductoEditar from './pages/admin/AdminProductoEditar';
-import AdminProducts from './pages/admin/AdminProducts';
+
 
 // Páginas de cliente
 import Login from './pages/client/Login';
@@ -40,10 +40,6 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Si el usuario es administrador, redirigir al panel admin
-  if (isAdmin()) {
-    return <Navigate to="/admin" replace />;
-  }
   
   return children;
 };
@@ -81,7 +77,11 @@ function App() {
             </AdminGuard>
           } />
           
-          <Route path="/admin/productos" element={<AdminProducts />} />
+          <Route path="/admin/productos" element={
+            <AdminGuard>
+              <AdminProductos />
+            </AdminGuard>
+          } />
 
           <Route path="/admin/productos/nuevo" element={
             <AdminGuard>

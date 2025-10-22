@@ -84,7 +84,7 @@ const Perfil = () => {
       <main className="container">
         <h1 className="titulo-seccion">Mi Cuenta</h1>
         
-        <div className="card mb-4">
+        <div className="card mb-4 bg-dark text-white border border-secondary">
           <div className="card-body">
             <h2>Resumen</h2>
             <div className="resumen-cuenta">
@@ -95,12 +95,12 @@ const Perfil = () => {
           </div>
         </div>
         
-        <div className="card mb-4">
+        <div className="card mb-4 bg-dark text-white border border-secondary">
           <div className="card-body">
             <h2>Historial de compras</h2>
             {orders.length > 0 ? (
               <div className="tabla-responsive">
-                <table className="table">
+                <table className="table table-dark table-striped">
                   <thead>
                     <tr>
                       <th>Orden #</th>
@@ -127,7 +127,7 @@ const Perfil = () => {
           </div>
         </div>
         
-        <div className="card">
+        <div className="card bg-dark text-white border border-secondary">
           <div className="card-body">
             <h2>Datos de cuenta</h2>
             <form onSubmit={handleSubmit}>
@@ -138,6 +138,7 @@ const Perfil = () => {
                     type="text" 
                     id="nombre" 
                     name="nombre" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.nombre} 
                     onChange={handleInputChange} 
                     required 
@@ -150,6 +151,7 @@ const Perfil = () => {
                     type="text" 
                     id="apellido" 
                     name="apellido" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.apellido} 
                     onChange={handleInputChange} 
                     required 
@@ -162,6 +164,7 @@ const Perfil = () => {
                     type="email" 
                     id="email" 
                     name="email" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.email} 
                     onChange={handleInputChange} 
                     required 
@@ -174,6 +177,7 @@ const Perfil = () => {
                     type="tel" 
                     id="telefono" 
                     name="telefono" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.telefono} 
                     onChange={handleInputChange} 
                   />
@@ -185,6 +189,7 @@ const Perfil = () => {
                     type="text" 
                     id="direccion" 
                     name="direccion" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.direccion} 
                     onChange={handleInputChange} 
                   />
@@ -196,6 +201,7 @@ const Perfil = () => {
                     type="text" 
                     id="region" 
                     name="region" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.region} 
                     onChange={handleInputChange} 
                   />
@@ -207,6 +213,7 @@ const Perfil = () => {
                     type="text" 
                     id="comuna" 
                     name="comuna" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.comuna} 
                     onChange={handleInputChange} 
                   />
@@ -218,6 +225,7 @@ const Perfil = () => {
                     type="password" 
                     id="password" 
                     name="password" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.password} 
                     onChange={handleInputChange} 
                   />
@@ -229,6 +237,7 @@ const Perfil = () => {
                     type="password" 
                     id="confirmPassword" 
                     name="confirmPassword" 
+                    className="form-control bg-dark text-white border-secondary"
                     value={formData.confirmPassword} 
                     onChange={handleInputChange} 
                   />
