@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lotuz · Admin – Productos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="logo-container">
+        <img src="../img/logo_lotus1.png" alt="Logo de Lotuz">
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="admin.html">Dashboard</a></li>
+          <li><a class="active" href="admin-productos.html">Productos</a></li>
+          <li><a href="admin-ordenes.html">Órdenes</a></li>
+          <li><a href="admin-login.html" id="adminLogout">Salir</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="container" style="padding: 18px 16px 32px;">
+      <h1 class="titulo-seccion" style="margin-top:0;">Gestión de productos</h1>
+
+      <div class="card" style="padding:12px; margin-bottom:12px;">
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <input id="pSearch" type="search" placeholder="Buscar..." style="flex:1; min-width:220px;">
+          <select id="pCat" style="min-width:200px;">
+            <option value="all">Todas las categorías</option>
+            <option value="mousepad">Mousepads</option>
+            <option value="mouse">Mouse</option>
+            <option value="audifonos">Audífonos</option>
+            <option value="teclado">Teclados</option>
+          </select>
+          <button id="btnNewProduct" class="btn btn-primary">Nuevo producto</button>
+        </div>
+      </div>
+
+      <div class="card" style="overflow:auto;">
+        <table class="table" style="min-width:880px;">
+          <thead>
+            <tr>
+              <th>ID</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tbProductos"><!-- admin_productos.js --></tbody>
+        </table>
+      </div>
+
+      <!-- Dialogo CRUD -->
+      <dialog id="dlgProducto" style="max-width:720px; border:none; border-radius:14px;">
+        <form id="productoForm" method="dialog" class="card" style="padding:16px;">
+          <h3 style="margin:0 0 8px;" id="dlgTitle">Producto</h3>
+          <div class="product-grid" style="grid-template-columns: 1fr 1fr;">
+            <div>
+              <label for="pId">ID</label>
+              <input id="pId" type="text" placeholder="slug_id" required>
+            </div>
+            <div>
+              <label for="pNombre">Nombre</label>
+              <input id="pNombre" type="text" required>
+            </div>
+            <div>
+              <label for="pCategoria">Categoría</label>
+              <select id="pCategoria" required>
+                <option value="mousepad">mousepad</option>
+                <option value="mouse">mouse</option>
+                <option value="audifonos">audifonos</option>
+                <option value="teclado">teclado</option>
+              </select>
+            </div>
+            <div>
+              <label for="pPrecio">Precio</label>
+              <input id="pPrecio" type="number" min="0" step="1" required>
+            </div>
+            <div style="grid-column:1 / -1;">
+              <label for="pFoto">URL de imagen</label>
+              <input id="pFoto" type="text" placeholder="../img/productos/...png">
+            </div>
+            <div style="grid-column:1 / -1;">
+              <label for="pDesc">Descripción</label>
+              <textarea id="pDesc" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="mt-3" style="display:flex; gap:8px; justify-content:flex-end;">
+            <button id="btnSaveProduct" class="btn btn-primary" type="submit">Guardar</button>
+            <button class="btn btn-ghost" value="cancel">Cancelar</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <footer class="main-footer">
+      <p>© 2025 Lotuz. Todos los derechos reservados.</p>
+    </footer>
+  </div>
+
+  <script src="../js/admin_guard.js"></script>
+  <script src="../js/admin_nav.js"></script>
+  <script src="../js/catalog.js"></script>
+  <script src="../js/admin_productos.js"></script>
+
+
+
+</body>
+</html>

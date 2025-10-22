@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lotuz · Admin – Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="logo-container">
+        <img src="../img/logo_lotus1.png" alt="Logo de Lotuz">
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a class="active" href="admin.html">Dashboard</a></li>
+          <li><a href="admin-productos.html">Productos</a></li>
+          <li><a href="admin-ordenes.html">Órdenes</a></li>
+          <li><a href="admin-login.html" id="adminLogout">Salir</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="container" style="padding: 18px 16px 32px;">
+      <h1 class="titulo-seccion" style="margin-top:0;">Dashboard</h1>
+
+      <div class="product-grid product-grid--three">
+        <div class="card"><div class="card-body">
+          <h3 style="margin:0;">Órdenes</h3>
+          <p id="kpiOrders" style="font-size:1.6rem; font-weight:700;">0</p>
+        </div></div>
+
+        <div class="card"><div class="card-body">
+          <h3 style="margin:0;">Ingresos</h3>
+          <p id="kpiRevenue" style="font-size:1.6rem; font-weight:700;">$0</p>
+        </div></div>
+
+        <div class="card"><div class="card-body">
+          <h3 style="margin:0;">Ticket promedio</h3>
+          <p id="kpiAvg" style="font-size:1.6rem; font-weight:700;">$0</p>
+        </div></div>
+      </div>
+
+      <section class="card" style="padding:16px; margin-top:16px;">
+        <div class="card-body">
+          <h2 style="margin:0 0 8px;">Actividad reciente</h2>
+          <div id="recentOrders">No hay movimientos.</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer">
+      <p>© 2025 Lotuz. Todos los derechos reservados.</p>
+    </footer>
+  </div>
+
+  <script src="../js/admin_guard.js"></script>
+  <script src="../js/admin_nav.js"></script>
+
+  <script>
+    (function(){
+      const money = v => Number(v||0).toLocaleString('es-CL',{style:'currency',currency:'CLP'});
+      const orders = JSON.parse(localStorage.getItem('lotuz:orders')||'[]');
+      const total  = orders.reduce((a,o)=>a+Number(o.total||0),0);
+      document.getElementById('kpiOrders').textContent  = orders.length;
+      document.getElementById('kpiRevenue').textContent = money(total);
+      document.getElementById('kpiAvg').textContent     = money(orders.length? total/orders.length : 0);
+
+      const recent = orders.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5)
+        .map(o => `<div style="display:flex;justify-content:space-between;"><span>#${o.id}</span><span>${money(o.total)}</span></div>`).join('');
+      document.getElementById('recentOrders').innerHTML = recent || 'No hay movimientos.';
+    })();
+  </script>
+</body>
+</html>

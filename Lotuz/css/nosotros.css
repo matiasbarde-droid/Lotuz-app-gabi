@@ -1,0 +1,50 @@
+/* Hero limpio, centrado, sin recuadro */
+.hero-nosotros{
+  text-align:center;
+  padding: 36px 16px 8px;
+}
+.hero-nosotros img{
+  height: 120px;
+  display:block;
+  margin: 0 auto 10px;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.45));
+}
+.hero-nosotros .tagline{
+  color: var(--text-2);
+  opacity: .9;
+  margin: 6px 0 0;
+  font-size: 1rem;
+}
+.hero-nosotros .divider{
+  width: 86px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  margin: 14px auto 0;
+  border-radius: 999px;
+  opacity:.9;
+}
+
+/* Cajas con espacio */
+.about-card{
+  padding: 20px 18px;
+  margin-bottom: 16px;
+}
+.about-card h2{
+  margin: 0 0 10px;
+}
+
+/* Listas y bloque de contacto */
+.about-list{
+  margin: 8px 0 0 18px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.contacto{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.contacto .btn{
+  white-space: nowrap;
+}

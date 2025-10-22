@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lotuz - Carrito</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="logo-container">
+        <img src="../img/logo_lotus1.png" alt="Logo de Lotuz">
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="inicio.html">Inicio</a></li>
+          <li><a href="login.html">Perfil</a></li>
+          <li><a class="active" href="carrito.html">Carrito <span id="cartCount"></span></a></li>
+          <li><a href="productos.html">Productos</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="container" style="padding: 18px 16px 32px;">
+      <h1 class="titulo-seccion" style="margin-top:0;">Carrito</h1>
+
+      <div id="emptyCart" class="card" style="padding:20px; display:none;">
+        <p>Tu carrito está vacío.</p>
+        <div class="mt-3">
+          <a class="btn btn-primary" href="productos.html">Ir a Productos</a>
+        </div>
+      </div>
+
+      <div class="card" style="overflow-x:auto;">
+        <table id="cartTable" class="table" style="min-width:760px;">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th style="width:160px;">Cantidad</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cartBody"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" style="text-align:right; font-weight:700;">Total</td>
+              <td id="cartTotal" style="font-weight:700;">$0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="cart-summary">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button id="btnClear" class="btn btn-ghost">Vaciar carrito</button>
+          <a class="btn btn-ghost" href="productos.html">Seguir comprando</a>
+        </div>
+        <button id="btnCheckout" class="btn btn-primary">Ir a pagar</button>
+      </div>
+
+      <section id="checkoutOptions" class="card" style="display:none; margin-top:16px; padding:16px;">
+        <h2 class="titulo-seccion" style="margin:0 0 12px;">Elegí cómo querés continuar</h2>
+
+        <div style="display:grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap:16px;">
+          <div class="card" style="padding:16px;">
+            <h3 style="margin-top:0;">Continuar como invitado</h3>
+            <p class="desc">Ingresá tu correo y te llevamos al pago sin crear cuenta.</p>
+            <div class="form-group">
+              <label for="guestEmail">Correo electrónico</label>
+              <input id="guestEmail" type="email" placeholder="tucorreo@ejemplo.com">
+              <small id="guestEmailError" class="error" style="display:none;">Ingresá un correo válido</small>
+            </div>
+            <button id="btnGuestContinue" class="btn btn-primary mt-3">Continuar al pago</button>
+          </div>
+
+          <div class="card" style="padding:16px;">
+            <h3 style="margin-top:0;">Tengo una cuenta</h3>
+            <p class="desc">Iniciá sesión para usar tus datos guardados y ver tu historial.</p>
+            <a class="btn btn-primary" href="login.html?return=pago.html">Iniciar sesión</a>
+            <p class="desc mt-3" style="margin-bottom:0;">¿No tenés cuenta? Podés continuar como invitado.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer">
+      <p>© 2025 Lotuz. Todos los derechos reservados.</p>
+    </footer>
+  </div>
+
+  <script src="../js/carrito.js"></script>
+  <script src="../js/session.js"></script>
+</body>
+</html>
