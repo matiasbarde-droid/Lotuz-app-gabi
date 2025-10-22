@@ -1,4 +1,4 @@
-# Lotuz Entrega 2 (estructura ordenada)
+# Lotuz Entrega 2
 
 Este repositorio se organiza en dos carpetas para evitar desorden:
 
