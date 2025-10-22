@@ -1,0 +1,28 @@
+# Node / Vite
+node_modules/
+dist/
+.env
+.env.local
+npm-debug.log*
+yarn-error.log*
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Spring Boot / Maven
+**/target/
+**/.idea/
+**/.project
+**/.classpath
+**/.settings/
+*.iml
+
+# Coverage / build artifacts
+coverage/
+*.zip
