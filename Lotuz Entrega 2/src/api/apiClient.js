@@ -47,7 +47,10 @@ apiClient.interceptors.response.use(
       }
       error.userMessage = message;
       error.url = url;
-      toast.error(`${message}${url ? ` (${url})` : ''}`);
+      const suppress = error.config?.headers && (error.config.headers['X-Suppress-Toast'] === true || error.config.headers['X-Suppress-Toast'] === 'true');
+      if (!suppress) {
+        toast.error(`${message}${url ? ` (${url})` : ''}`);
+      }
       
       // Manejo específico según el código de estado
       if (status === 401) {
@@ -64,12 +67,18 @@ apiClient.interceptors.response.use(
       const isTimeout = error.code === 'ECONNABORTED';
       const message = isTimeout ? 'La solicitud excedió el tiempo de espera' : 'No se pudo contactar al servidor';
       error.userMessage = message;
-      toast.error(message);
+      const suppress = error.config?.headers && (error.config.headers['X-Suppress-Toast'] === true || error.config.headers['X-Suppress-Toast'] === 'true');
+      if (!suppress) {
+        toast.error(message);
+      }
     } else {
       // Error al configurar la solicitud
       console.error('Error de configuración:', error.message);
       error.userMessage = 'Error al configurar la solicitud';
-      toast.error(error.userMessage);
+      const suppress = error.config?.headers && (error.config.headers['X-Suppress-Toast'] === true || error.config.headers['X-Suppress-Toast'] === 'true');
+      if (!suppress) {
+        toast.error(error.userMessage);
+      }
     }
     
     return Promise.reject(error);

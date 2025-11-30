@@ -40,7 +40,7 @@ const Checkout = () => {
         ...prev,
         nombre: user.nombre || '',
         apellido: user.apellido || '',
-        email: user.email || '',
+        email: user.correo || '',
         telefono: user.telefono || '',
         direccion: user.direccion || '',
         region: user.region || '',
@@ -105,7 +105,7 @@ const Checkout = () => {
 
     try {
       // Usar siempre el correo para el checkout (tratamos como invitado en H2)
-      const emailToUse = ((user && !isAdmin()) ? (user.email || '') : (formData.email || emailInvitado || '')).trim();
+      const emailToUse = ((user && !isAdmin()) ? (user.correo || '') : (formData.email || emailInvitado || '')).trim();
       if (!emailToUse) {
         toast.error('Necesitamos un correo para la compra');
         setLoading(false);

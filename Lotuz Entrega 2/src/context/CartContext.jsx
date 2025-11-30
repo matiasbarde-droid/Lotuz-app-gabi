@@ -138,8 +138,13 @@ export const CartProvider = ({ children }) => {
         }))
       };
 
-      // Enviar solicitud al API
-      const response = await apiClient.post('/checkout', checkoutData);
+      // Si alguno de los SKU parece numérico (mock), evitamos llamar a backend
+      const hasNumericSku = checkoutData.items.some(it => /^\d+$/.test(String(it.sku)));
+      if (hasNumericSku) {
+        throw new Error('SKU mock no compatible con backend');
+      }
+      // Enviar solicitud al API sin toasts automáticos
+      const response = await apiClient.post('/checkout', checkoutData, { headers: { 'X-Suppress-Toast': true } });
       // Limpiar carrito después de checkout exitoso
       clearCart();
       return response.data;

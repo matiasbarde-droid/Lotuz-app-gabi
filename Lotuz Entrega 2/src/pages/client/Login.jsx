@@ -12,7 +12,6 @@ const Login = () => {
   const [error, setError] = useState('');
   const { login, isLoggedIn } = useAuth();
   
-  // Si el usuario ya está autenticado, redirigir a la página de inicio
   if (isLoggedIn()) {
     return <Navigate to="/" replace />;
   }
