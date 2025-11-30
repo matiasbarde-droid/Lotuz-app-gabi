@@ -6,9 +6,8 @@ const UserForm = ({ show, onClose, user, onSave }) => {
   const [formData, setFormData] = useState({
     id: null,
     nombre: '',
-    apellido: '',
     rut: '',
-    email: '',
+    correo: '',
     telefono: '',
     direccion: '',
     region: '',
@@ -24,9 +23,7 @@ const UserForm = ({ show, onClose, user, onSave }) => {
 
   const roles = [
     { value: 'CLIENTE', label: 'Cliente' },
-    { value: 'VENDEDOR', label: 'Vendedor' },
-    { value: 'ADMIN', label: 'Administrador' },
-    { value: 'SUPER_ADMIN', label: 'Super Administrador' }
+    { value: 'ADMIN', label: 'Administrador' }
   ];
 
   // Cargar datos del usuario cuando se edita
@@ -35,9 +32,8 @@ const UserForm = ({ show, onClose, user, onSave }) => {
       setFormData({
         id: user.id || null,
         nombre: user.nombre || '',
-        apellido: user.apellido || '',
         rut: user.rut || '',
-        email: user.email || '',
+        correo: user.correo || '',
         telefono: user.telefono || '',
         direccion: user.direccion || '',
         region: user.region || '',
@@ -52,9 +48,8 @@ const UserForm = ({ show, onClose, user, onSave }) => {
       setFormData({
         id: null,
         nombre: '',
-        apellido: '',
         rut: '',
-        email: '',
+        correo: '',
         telefono: '',
         direccion: '',
         region: '',
@@ -103,20 +98,16 @@ const UserForm = ({ show, onClose, user, onSave }) => {
       newErrors.nombre = 'El nombre es obligatorio';
     }
     
-    if (!formData.apellido.trim()) {
-      newErrors.apellido = 'El apellido es obligatorio';
-    }
-    
     if (!formData.rut.trim()) {
       newErrors.rut = 'El RUT es obligatorio';
     } else if (!validateRut(formData.rut)) {
       newErrors.rut = 'El RUT no es válido';
     }
     
-    if (!formData.email.trim()) {
-      newErrors.email = 'El email es obligatorio';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'El email no es válido';
+    if (!formData.correo.trim()) {
+      newErrors.correo = 'El email es obligatorio';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
+      newErrors.correo = 'El email no es válido';
     }
     
     if (formData.telefono && !validatePhone(formData.telefono)) {
@@ -238,21 +229,7 @@ const UserForm = ({ show, onClose, user, onSave }) => {
                     <div className="invalid-feedback">{errors.nombre}</div>
                   )}
                 </div>
-                <div className="col-md-6">
-                  <label htmlFor="apellido" className="form-label">Apellido *</label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.apellido ? 'is-invalid' : ''}`}
-                    id="apellido"
-                    name="apellido"
-                    value={formData.apellido}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.apellido && (
-                    <div className="invalid-feedback">{errors.apellido}</div>
-                  )}
-                </div>
+                
               </div>
               
               <div className="row mb-3">
@@ -273,18 +250,18 @@ const UserForm = ({ show, onClose, user, onSave }) => {
                   )}
                 </div>
                 <div className="col-md-6">
-                  <label htmlFor="email" className="form-label">Email *</label>
+                  <label htmlFor="correo" className="form-label">Email *</label>
                   <input
                     type="email"
-                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                    id="email"
-                    name="email"
-                    value={formData.email}
+                    className={`form-control ${errors.correo ? 'is-invalid' : ''}`}
+                    id="correo"
+                    name="correo"
+                    value={formData.correo}
                     onChange={handleChange}
                     required
                   />
-                  {errors.email && (
-                    <div className="invalid-feedback">{errors.email}</div>
+                  {errors.correo && (
+                    <div className="invalid-feedback">{errors.correo}</div>
                   )}
                 </div>
               </div>
@@ -357,6 +334,11 @@ const UserForm = ({ show, onClose, user, onSave }) => {
                     onChange={handleChange}
                     required={!formData.id}
                   />
+                  {formData.password && (
+                    <div className="form-text">
+                      Fortaleza: {formData.password.length >= 12 ? 'Alta' : formData.password.length >= 8 ? 'Media' : 'Baja'}
+                    </div>
+                  )}
                   {errors.password && (
                     <div className="invalid-feedback">{errors.password}</div>
                   )}
@@ -376,6 +358,11 @@ const UserForm = ({ show, onClose, user, onSave }) => {
                   />
                   {errors.confirmPassword && (
                     <div className="invalid-feedback">{errors.confirmPassword}</div>
+                  )}
+                  {formData.id && (
+                    <button type="button" className="btn btn-link mt-2 p-0" onClick={() => setFormData({ ...formData, password: '', confirmPassword: '' })}>
+                      Resetear contraseña
+                    </button>
                   )}
                 </div>
               </div>

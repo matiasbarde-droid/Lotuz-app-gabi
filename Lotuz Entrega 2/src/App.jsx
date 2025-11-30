@@ -26,6 +26,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminProductos from './pages/admin/AdminProductos';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProductoNuevo from './pages/admin/AdminProductoNuevo';
+import AdminUsers from './pages/admin/AdminUsers';
 
 // Componente para proteger rutas que requieren autenticación (solo clientes, no admin)
 const ProtectedRoute = ({ children }) => {
@@ -97,6 +98,12 @@ function App() {
           <Route path="/admin/ordenes" element={
             <AdminGuard>
               <AdminOrders />
+            </AdminGuard>
+          } />
+          
+          <Route path="/admin/usuarios" element={
+            <AdminGuard>
+              <AdminUsers />
             </AdminGuard>
           } />
           

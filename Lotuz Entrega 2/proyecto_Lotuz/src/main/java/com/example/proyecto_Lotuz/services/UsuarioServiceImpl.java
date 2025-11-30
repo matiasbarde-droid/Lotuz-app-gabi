@@ -1,11 +1,17 @@
 package com.example.proyecto_Lotuz.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.proyecto_Lotuz.entities.Usuario;
+import com.example.proyecto_Lotuz.entities.Roles;
 import com.example.proyecto_Lotuz.repositories.UsuariosRepositories;
 
 @Service
@@ -52,6 +58,23 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public Page<Usuario> listar(String q, Roles rol, Boolean activo, LocalDateTime from, LocalDateTime to, Pageable pageable) {
+        Page<Usuario> page = usuarioRepositories.findAll(pageable);
+        List<Usuario> filtered = page.getContent().stream()
+            .filter(u -> q == null || q.isBlank() ||
+                (u.getNombre() != null && u.getNombre().toLowerCase().contains(q.toLowerCase())) ||
+                (u.getCorreo() != null && u.getCorreo().toLowerCase().contains(q.toLowerCase())) ||
+                (u.getRut() != null && u.getRut().toLowerCase().contains(q.toLowerCase()))
+            )
+            .filter(u -> rol == null || u.getRol() == rol)
+            .filter(u -> activo == null || u.isActivo() == activo)
+            .filter(u -> from == null || (u.getCreatedAt() != null && !u.getCreatedAt().isBefore(from)))
+            .filter(u -> to == null || (u.getCreatedAt() != null && !u.getCreatedAt().isAfter(to)))
+            .collect(Collectors.toList());
+        return new PageImpl<>(filtered, pageable, page.getTotalElements());
+    }
+
+    @Override
     public Usuario actualizarPerfil(Long id, Usuario datosActualizados) {
         Usuario existente = obtenerPorId(id);
         
@@ -89,10 +112,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void eliminar(Long id) {
-        if (!usuarioRepositories.existsById(id)) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
-        usuarioRepositories.deleteById(id);
+        desactivar(id);
+    }
+
+    @Override
+    public void desactivar(Long id) {
+        Usuario usuario = obtenerPorId(id);
+        usuario.setActivo(false);
+        usuarioRepositories.save(usuario);
     }
 
     @Override

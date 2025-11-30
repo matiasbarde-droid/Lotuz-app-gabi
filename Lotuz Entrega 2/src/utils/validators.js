@@ -63,3 +63,18 @@ export const validatePhone = (phone) => {
 export const validatePassword = (password, min = 8) => {
   return typeof password === 'string' && password.length >= min;
 };
+
+/**
+ * Formatea un RUT chileno mientras se escribe
+ * - Remueve puntos
+ * - Inserta guion antes del dígito verificador
+ * Ej: 12345678K -> 12345678-K
+ */
+export const formatRut = (value) => {
+  if (!value) return '';
+  const clean = String(value).replace(/\./g, '').replace(/[^0-9kK]/g, '');
+  if (clean.length <= 1) return clean.toUpperCase();
+  const cuerpo = clean.slice(0, -1);
+  const dv = clean.slice(-1).toUpperCase();
+  return `${cuerpo}-${dv}`;
+};

@@ -3,7 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
-import { validateInstitutionalEmail, validatePassword } from '../../utils/validators';
+import { validateEmail, validatePassword } from '../../utils/validators';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,18 +17,21 @@ const Login = () => {
     return <Navigate to="/" replace />;
   }
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!validateInstitutionalEmail(email)) {
-      setError('El correo debe terminar en @profesor.duoc.cl o @duocuc.cl');
+    if (!validateEmail(email)) {
+      setError('Ingrese un correo válido');
       return;
     }
     if (!validatePassword(password, 8)) {
       setError('La contraseña debe tener al menos 8 caracteres');
       return;
     }
-    login(email, password);
+    const result = await login(email.trim().toLowerCase(), password);
+    if (!result?.success) {
+      setError(result?.message || 'Credenciales inválidas');
+    }
   };
   
   return (
@@ -53,7 +56,6 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    pattern="^[^\\s@]+@(profesor\\.duoc\\.cl|duocuc\\.cl)$"
                   />
                 </div>
                 

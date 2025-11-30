@@ -23,6 +23,9 @@ public class Usuario{
     private Roles rol = Roles.CLIENTE; 
 
     private LocalDateTime createdAt = LocalDateTime.now(); 
+    
+    @Column(nullable = false)
+    private boolean activo = true;
 
     @Column(unique = true, nullable = false)
     private String correo; 
@@ -44,6 +47,7 @@ public class Usuario{
         this.password= password;
         this.rol = Roles.CLIENTE;
         this.createdAt = LocalDateTime.now();
+        this.activo = true;
     }
 }
 

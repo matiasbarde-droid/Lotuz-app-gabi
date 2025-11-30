@@ -47,6 +47,13 @@ const AdminNav = () => {
             >
               Órdenes
             </Nav.Link>
+            <Nav.Link 
+              as={Link} 
+              to="/admin/usuarios" 
+              active={location.pathname === '/admin/usuarios'}
+            >
+              Usuarios
+            </Nav.Link>
           </Nav>
           <Button variant="outline-light" onClick={handleLogout}>
             Cerrar Sesión
