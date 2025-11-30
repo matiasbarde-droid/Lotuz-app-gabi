@@ -135,11 +135,13 @@ const Products = () => {
     const categoria = categoriaMap[p.categoria] || p.categoria || '';
     return {
       id: p.id ?? p.sku ?? p.nombre ?? Math.random().toString(36).slice(2),
+      sku: p.sku || null,
       nombre: String(p.nombre || ''),
       precio: Number(p.precio ?? 0),
       imagen,
       categoria,
       descripcion: String(p.descripcion || ''),
+      stock: typeof p.stock === 'number' ? p.stock : 0,
     };
   };
 
@@ -270,6 +272,7 @@ const Products = () => {
   const handleAddToCart = (product) => {
     addToCart({
       id: product.id,
+      sku: product.sku,
       nombre: product.nombre,
       precio: product.precio,
       imagen: product.imagen,
@@ -385,6 +388,11 @@ const Products = () => {
                       <div className="card-body">
                         <h5 className="card-title text-white">{product.nombre}</h5>
                         <p className="card-text text-info fw-bold">${formatCurrency(product.precio)}</p>
+                        <p className="card-text">
+                          <span className={`badge ${product.stock === 0 ? 'bg-danger' : product.stock < 5 ? 'bg-warning text-dark' : 'bg-secondary'}`}>
+                            Stock: {product.stock}
+                          </span>
+                        </p>
                         <p className="card-text text-secondary small">{product.descripcion}</p>
                       </div>
                       
@@ -392,6 +400,7 @@ const Products = () => {
                         <button 
                           className="btn btn-info w-100" 
                           onClick={() => handleAddToCart(product)}
+                          disabled={product.stock === 0}
                         >
                           Agregar
                         </button>

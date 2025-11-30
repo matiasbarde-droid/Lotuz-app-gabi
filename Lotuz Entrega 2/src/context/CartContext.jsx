@@ -54,6 +54,7 @@ export const CartProvider = ({ children }) => {
 
   // Utilidad para obtener una clave única del producto
   const getProductKey = (product) => {
+    // Prioriza sku real para que el backend pueda reconocer el producto
     return product?.sku ?? product?.id ?? product?.nombre ?? Math.random().toString(36).slice(2);
   };
 
@@ -145,8 +146,20 @@ export const CartProvider = ({ children }) => {
       }
       // Enviar solicitud al API sin toasts automáticos
       const response = await apiClient.post('/checkout', checkoutData, { headers: { 'X-Suppress-Toast': true } });
+      // Guardar orden real para el dashboard (retrocompatibilidad)
+      try {
+        const order = response.data || {};
+        saveOrderToStorage({
+          id: order.id,
+          total: order.total,
+          fechaCreacion: order.fechaCreacion,
+          numeroOrden: order.numeroOrden,
+          estado: order.estado,
+        });
+      } catch (e) { console.warn('No se pudo registrar la orden en storage:', e); }
       // Limpiar carrito después de checkout exitoso
       clearCart();
+      try { localStorage.removeItem('lotuz:products_cache_v1'); } catch {}
       return response.data;
     } catch (error) {
       console.warn('Fallo API checkout, simulando compra local como invitado/usuario:', error);
@@ -168,6 +181,7 @@ export const CartProvider = ({ children }) => {
       };
       saveOrderToStorage(simulatedOrder);
       clearCart();
+      try { localStorage.removeItem('lotuz:products_cache_v1'); } catch {}
       return { success: true, simulated: true, order: simulatedOrder };
     }
   };
