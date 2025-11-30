@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AdminNav from '../../components/admin/AdminNav';
+import { api } from '../../api/apiClient';
+import { toast } from 'react-toastify';
 
 const AdminProductos = () => {
   const [products, setProducts] = useState([]);
@@ -25,31 +27,26 @@ const AdminProductos = () => {
   });
 
   useEffect(() => {
-    // Cargar productos desde localStorage (simulando backend)
-    const storedProducts = JSON.parse(localStorage.getItem('lotuz:products') || '[]');
-
-    if (!storedProducts || storedProducts.length === 0) {
-      const seedProducts = [
-        { id: 'artisan_rojo1', nombre: 'Artisan Rojo', precio: 74990, imagen: '/img/productos/artisan_rojo1.png', categoria: 'Mousepads', descripcion: 'Mousepad con superficie control y base antideslizante.', stock: 20 },
-        { id: 'raypad_azul1', nombre: 'X-Raypad Azul', precio: 39990, imagen: '/img/productos/raypad_azul1.png', categoria: 'Mousepads', descripcion: 'Mousepad speed azul, bordes cosidos premium.', stock: 20 },
-        { id: 'raypad_rosado1', nombre: 'X-Raypad Rosado', precio: 49990, imagen: '/img/productos/raypad_rosado1.png', categoria: 'Mousepads', descripcion: 'Mousepad speed rosado, base de goma de alta densidad.', stock: 20 },
-        { id: 'mouse_logi_rosa1', nombre: 'Logitech Superlight', precio: 115990, imagen: '/img/productos/mouse_logi_rosa1.png', categoria: 'Mouse', descripcion: 'Edición rosa, ligero y ergonómico.', stock: 15 },
-        { id: 'mouse_mitsuri', nombre: 'Mouse Pulsar Mitsuri', precio: 132990, imagen: '/img/productos/mouse_mitsuri.png', categoria: 'Mouse', descripcion: 'Precisión y estabilidad.', stock: 12 },
-        { id: 'razer_mouse1', nombre: 'Razer Deathadder v3', precio: 145990, imagen: '/img/productos/razer_mouse1.png', categoria: 'Mouse', descripcion: 'Switches ópticos.', stock: 18 },
-        { id: 'audifonos_logi1', nombre: 'Audífonos Logitech Aurora', precio: 215990, imagen: '/img/productos/audifonos_logi1.png', categoria: 'Audífonos', descripcion: 'Sonido envolvente.', stock: 10 },
-        { id: 'hyperx_cloud1', nombre: 'HyperX Cloud Flight', precio: 105990, imagen: '/img/productos/hyperx_cloud1.png', categoria: 'Audífonos', descripcion: 'Comodidad legendaria.', stock: 14 },
-        { id: 'razer_kittynegros', nombre: 'Razer Kitty Negros', precio: 99990, imagen: '/img/productos/razer_kittynegros.png', categoria: 'Audífonos', descripcion: 'Orejas luminosas.', stock: 16 },
-        { id: 'logitech_teclado_rosa', nombre: 'Teclado Logitech Pro', precio: 179990, imagen: '/img/productos/logitech_teclado_rosa.png', categoria: 'Teclados', descripcion: 'Compacto, RGB.', stock: 9 },
-        { id: 'teclado_aurora', nombre: 'Teclado Aurora', precio: 189990, imagen: '/img/productos/teclado_aurora.png', categoria: 'Teclados', descripcion: 'TKL y keycaps premium.', stock: 11 },
-        { id: 'tecladoatk_rosado1', nombre: 'Teclado ATK Rosado', precio: 75990, imagen: '/img/productos/tecladoatk_rosado1.png', categoria: 'Teclados', descripcion: 'Layout cómodo.', stock: 22 }
-      ];
-      localStorage.setItem('lotuz:products', JSON.stringify(seedProducts));
-      setProducts(seedProducts);
-      setFilteredProducts(seedProducts);
-    } else {
-      setProducts(storedProducts);
-      setFilteredProducts(storedProducts);
-    }
+    const catLabel = (en) => ({ MOUSE: 'Mouse', MOUSEPAD: 'Mousepads', AUDIFONOS: 'Audífonos', TECLADO: 'Teclados' }[en] || en);
+    (async () => {
+      try {
+        const res = await api.get('/productos');
+        const list = Array.isArray(res.data) ? res.data : [];
+        const mapped = list.map(p => ({
+          id: String(p.id),
+          nombre: p.nombre,
+          descripcion: p.descripcion,
+          precio: p.precio,
+          stock: p.stock,
+          categoria: catLabel(p.categoria),
+          imagen: p.fotoUrl
+        }));
+        setProducts(mapped);
+        setFilteredProducts(mapped);
+      } catch (e) {
+        toast.error('No se pudo cargar productos');
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -121,12 +118,14 @@ const AdminProductos = () => {
     setShowProductModal(true);
   };
 
-  const handleDeleteProduct = (productId) => {
-    if (window.confirm('¿Está seguro de que desea eliminar este producto?')) {
-      const updatedProducts = products.filter(product => product.id !== productId);
-      setProducts(updatedProducts);
-      localStorage.setItem('lotuz:products', JSON.stringify(updatedProducts));
-      setShowProductModal(false);
+  const handleDeleteProduct = async (productId) => {
+    if (!window.confirm('¿Está seguro de que desea inactivar este producto?')) return;
+    try {
+      await api.put(`/admin/products/${productId}`, { estado: 'INACTIVO' }, { headers: { 'X-ADMIN': 'true' } });
+      setProducts(prev => prev.map(p => p.id === String(productId) ? { ...p, estado: 'INACTIVO' } : p));
+      toast.success('Producto inactivado');
+    } catch {
+      toast.error('No se pudo inactivar');
     }
   };
 

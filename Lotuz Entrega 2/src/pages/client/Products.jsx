@@ -4,9 +4,10 @@ import { useCart } from '../../context/CartContext';
 import { toast } from 'react-toastify';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
+import { api } from '../../api/apiClient';
 
 const Products = () => {
-  // Datos de ejemplo para los productos
+  // Datos de ejemplo para los productos (retrocompatibilidad y fallback)
   const mockProducts = [
     {
       id: 1,
@@ -121,19 +122,94 @@ const Products = () => {
   
   const { addToCart } = useCart();
 
-  // Cargar productos al montar el componente
+  // Mapeo y validación de datos provenientes del backend
+  const mapBackendProduct = (p) => {
+    // Documentación: Este mapeo asegura compatibilidad con el esquema de UI actual.
+    const categoriaMap = {
+      MOUSE: 'Mouse',
+      MOUSEPAD: 'Mousepads',
+      AUDIFONOS: 'Audífonos',
+      TECLADO: 'Teclados',
+    };
+    const imagen = p.fotoUrl || '/img/producto-placeholder.jpg';
+    const categoria = categoriaMap[p.categoria] || p.categoria || '';
+    return {
+      id: p.id ?? p.sku ?? p.nombre ?? Math.random().toString(36).slice(2),
+      nombre: String(p.nombre || ''),
+      precio: Number(p.precio ?? 0),
+      imagen,
+      categoria,
+      descripcion: String(p.descripcion || ''),
+    };
+  };
+
+  const isValidProduct = (p) => {
+    // Documentación: Validación mínima de tipos para datos del endpoint
+    return (
+      typeof p.nombre === 'string' && p.nombre.length > 0 &&
+      typeof p.precio === 'number' && !Number.isNaN(p.precio) &&
+      typeof p.imagen === 'string' && p.imagen.length > 0 &&
+      typeof p.categoria === 'string'
+    );
+  };
+
+  const CACHE_KEY = 'lotuz:products_cache_v1';
+  const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
+
+  // Cargar productos (con caché y fallback a mock)
   useEffect(() => {
-    // Simulamos la carga de datos
-    setTimeout(() => {
-      setProducts(mockProducts);
-      setFilteredProducts(mockProducts);
-      
-      // Extraer categorías únicas
-      const uniqueCategories = [...new Set(mockProducts.map(product => product.categoria))];
+    const loadFromCache = () => {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.ts || !parsed.data) return null;
+        if (Date.now() - parsed.ts > CACHE_TTL_MS) return null;
+        return parsed.data;
+      } catch {
+        return null;
+      }
+    };
+
+    const applyData = (list) => {
+      const uniqueCategories = [...new Set(list.map(product => product.categoria))];
+      setProducts(list);
+      setFilteredProducts(list);
       setCategories(uniqueCategories);
-      
+    };
+
+    const cached = loadFromCache();
+    if (cached) {
+      applyData(cached);
       setLoading(false);
-    }, 500);
+    }
+
+    (async () => {
+      try {
+        const response = await api.get('/productos');
+        const rawList = Array.isArray(response.data) ? response.data : [];
+        const mapped = rawList.map(mapBackendProduct).filter(isValidProduct);
+        if (mapped.length > 0) {
+          applyData(mapped);
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: mapped }));
+          } catch {}
+        } else if (!cached) {
+          // Fallback a mock si endpoint vacío y no hay caché
+          applyData(mockProducts);
+        }
+        setError(null);
+      } catch (err) {
+        // Manejo de errores de conexión
+        setError('No se pudo cargar el catálogo. Mostrando datos locales.');
+        toast.error('Error al cargar productos');
+        if (!cached) {
+          applyData(mockProducts);
+        }
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   // Aplicar filtros cuando cambien

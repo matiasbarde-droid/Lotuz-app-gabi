@@ -26,13 +26,13 @@ const AdminProducts = () => {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (sku) => {
-    if (!window.confirm('¿Estás seguro de eliminar este producto?')) return;
+  const handleDelete = async (id) => {
+    if (!window.confirm('¿Estás seguro de inactivar este producto?')) return;
     try {
-      await api.delete(`/admin/productos/${sku}`);
-      setProducts((prev) => prev.filter((p) => p.sku !== sku));
+      await api.put(`/admin/products/${id}`, { estado: 'INACTIVO' }, { headers: { 'X-ADMIN': 'true' } });
+      setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, estado: 'INACTIVO' } : p)));
     } catch (err) {
-      alert('Error al eliminar el producto');
+      alert('Error al inactivar el producto');
     }
   };
 
@@ -51,9 +51,9 @@ const AdminProducts = () => {
     setSelectedProduct(null);
     // Si existe en la lista, lo reemplazamos; si no, lo agregamos
     setProducts((prev) => {
-      const exists = prev.some((p) => p.sku === savedProduct.sku);
+      const exists = prev.some((p) => p.id === savedProduct.id);
       return exists
-        ? prev.map((p) => (p.sku === savedProduct.sku ? savedProduct : p))
+        ? prev.map((p) => (p.id === savedProduct.id ? savedProduct : p))
         : [savedProduct, ...prev];
     });
   };
@@ -80,7 +80,7 @@ const AdminProducts = () => {
         <table className="table table-striped">
           <thead>
             <tr>
-              <th>SKU</th>
+              <th>ID</th>
               <th>Imagen</th>
               <th>Nombre</th>
               <th>Categoría</th>
@@ -91,7 +91,7 @@ const AdminProducts = () => {
           <tbody>
             {products.map((product) => (
               <tr key={product.sku}>
-                <td>{product.sku}</td>
+                <td>{product.id}</td>
                 <td>
                   {product.fotoUrl ? (
                     <img src={product.fotoUrl} alt={product.nombre} style={{ width: '60px', height: '60px', objectFit: 'cover' }} />
@@ -104,7 +104,7 @@ const AdminProducts = () => {
                 <td>${Number(product.precio).toLocaleString('es-CL')}</td>
                 <td>
                   <button className="btn btn-sm btn-secondary me-2" onClick={() => handleEdit(product)}>Editar</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => handleDelete(product.sku)}>Eliminar</button>
+                  <button className="btn btn-sm btn-danger" onClick={() => handleDelete(product.id)}>Eliminar</button>
                 </td>
               </tr>
             ))}

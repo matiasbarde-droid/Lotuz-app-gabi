@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AdminNav from '../../components/admin/AdminNav';
+import { api } from '../../api/apiClient';
+import { toast } from 'react-toastify';
 
 const AdminProductoEditar = () => {
   const navigate = useNavigate();
@@ -20,19 +22,30 @@ const AdminProductoEditar = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem('lotuz:products') || '[]');
-      const prod = stored.find(p => p.id === id);
-      if (!prod) {
-        setError('Producto no encontrado');
-      } else {
-        setProductForm(prod);
+    (async () => {
+      try {
+        const res = await api.get('/productos');
+        const list = Array.isArray(res.data) ? res.data : [];
+        const prod = list.find(p => String(p.id) === String(id));
+        if (!prod) {
+          setError('Producto no encontrado');
+        } else {
+          setProductForm({
+            id: String(prod.id),
+            nombre: prod.nombre || '',
+            descripcion: prod.descripcion || '',
+            precio: prod.precio ?? '',
+            stock: prod.stock ?? '',
+            categoria: prod.categoria || '',
+            imagen: prod.fotoUrl || ''
+          });
+        }
+      } catch (e) {
+        setError('Error cargando el producto');
+      } finally {
+        setLoading(false);
       }
-    } catch (e) {
-      setError('Error cargando el producto');
-    } finally {
-      setLoading(false);
-    }
+    })();
   }, [id]);
 
   const handleFormChange = (e) => {
@@ -48,13 +61,28 @@ const AdminProductoEditar = () => {
     setSaving(true);
     setError('');
     try {
-      const stored = JSON.parse(localStorage.getItem('lotuz:products') || '[]');
-      const updated = stored.map(p => (p.id === productForm.id ? productForm : p));
-      localStorage.setItem('lotuz:products', JSON.stringify(updated));
+      const catMap = {
+        'Mouse': 'MOUSE',
+        'Mousepads': 'MOUSEPAD',
+        'Audífonos': 'AUDIFONOS',
+        'Teclados': 'TECLADO'
+      };
+      const categoriaEnum = catMap[productForm.categoria] || (productForm.categoria || '').toUpperCase();
+      const payload = {
+        nombre: productForm.nombre,
+        descripcion: productForm.descripcion,
+        precio: Number(productForm.precio),
+        stock: Number(productForm.stock) || 0,
+        categoria: categoriaEnum,
+        fotoUrl: productForm.imagen
+      };
+      await api.put(`/admin/products/${id}`, payload, { headers: { 'X-ADMIN': 'true' } });
+      toast.success('Producto actualizado');
       navigate('/admin/productos');
     } catch (err) {
       console.error(err);
-      setError('Ocurrió un error al guardar los cambios');
+      setError(err.response?.data || 'Ocurrió un error al guardar los cambios');
+      toast.error('No se pudo actualizar');
     } finally {
       setSaving(false);
     }

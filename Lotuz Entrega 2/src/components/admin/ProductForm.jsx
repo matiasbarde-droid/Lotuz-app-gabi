@@ -3,12 +3,14 @@ import { api } from '../../api/apiClient';
 
 const ProductForm = ({ product, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
+    id: null,
     sku: '',
     nombre: '',
     descripcion: '',
     precio: 0,
     categoria: 'MOUSEPAD',
-    fotoUrl: ''
+    fotoUrl: '',
+    stock: 0
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -17,16 +19,18 @@ const ProductForm = ({ product, onSave, onCancel }) => {
   useEffect(() => {
     if (product) {
       setFormData({
+        id: product.id ?? null,
         sku: product.sku || '',
         nombre: product.nombre || '',
         descripcion: product.descripcion || '',
         precio: product.precio ?? 0,
         categoria: product.categoria || 'MOUSEPAD',
-        fotoUrl: product.fotoUrl || ''
+        fotoUrl: product.fotoUrl || '',
+        stock: product.stock ?? 0
       });
       setPreviewUrl(product.fotoUrl || '');
     } else {
-      setFormData({ sku: '', nombre: '', descripcion: '', precio: 0, categoria: 'MOUSEPAD', fotoUrl: '' });
+      setFormData({ id: null, sku: '', nombre: '', descripcion: '', precio: 0, categoria: 'MOUSEPAD', fotoUrl: '', stock: 0 });
       setPreviewUrl('');
     }
   }, [product]);
@@ -38,6 +42,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     if (!formData.descripcion?.trim()) newErrors.descripcion = 'Descripción es requerida';
     if (formData.precio === undefined || Number(formData.precio) <= 0) newErrors.precio = 'Precio debe ser mayor a 0';
     if (!formData.categoria?.trim()) newErrors.categoria = 'Categoría es requerida';
+    if (formData.stock === undefined || Number(formData.stock) < 0) newErrors.stock = 'Stock debe ser 0 o mayor';
     if (!formData.fotoUrl?.trim()) newErrors.fotoUrl = 'URL de la foto es requerida';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -60,19 +65,29 @@ const ProductForm = ({ product, onSave, onCancel }) => {
         descripcion: formData.descripcion.trim(),
         precio: Number(formData.precio),
         categoria: formData.categoria,
-        fotoUrl: formData.fotoUrl.trim()
+        fotoUrl: formData.fotoUrl.trim(),
+        stock: Number(formData.stock) || 0,
+        estado: 'ACTIVO'
       };
 
       let response;
-      if (product && product.sku) {
-        response = await api.put(`/admin/productos/${product.sku}`, payload);
+      if (product && (product.id || formData.id)) {
+        response = await api.put(`/admin/products/${product.id ?? formData.id}`, {
+          nombre: payload.nombre,
+          descripcion: payload.descripcion,
+          precio: payload.precio,
+          categoria: payload.categoria,
+          fotoUrl: payload.fotoUrl,
+          stock: payload.stock,
+          estado: 'ACTIVO'
+        }, { headers: { 'X-ADMIN': 'true' } });
       } else {
-        response = await api.post('/admin/productos', payload);
+        response = await api.post('/admin/products', payload, { headers: { 'X-ADMIN': 'true' } });
       }
 
       onSave?.(response.data);
     } catch (error) {
-      alert(error.response?.data?.message || 'Error al guardar el producto');
+      alert(error.response?.data || 'Error al guardar el producto');
     } finally {
       setSubmitting(false);
     }
@@ -146,8 +161,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
                 <option value="MOUSEPAD">Mousepad</option>
                 <option value="TECLADO">Teclado</option>
                 <option value="MOUSE">Mouse</option>
-                <option value="AUDIFONO">Audífono</option>
-                <option value="ACCESORIO">Accesorio</option>
+                <option value="AUDIFONOS">Audífonos</option>
               </select>
               {errors.categoria && <div className="invalid-feedback">{errors.categoria}</div>}
             </div>
@@ -163,6 +177,20 @@ const ProductForm = ({ product, onSave, onCancel }) => {
                 placeholder="https://..."
               />
               {errors.fotoUrl && <div className="invalid-feedback">{errors.fotoUrl}</div>}
+            </div>
+
+            <div className="col-md-4">
+              <label className="form-label">Stock</label>
+              <input
+                type="number"
+                name="stock"
+                className={`form-control ${errors.stock ? 'is-invalid' : ''}`}
+                value={formData.stock}
+                onChange={handleChange}
+                min="0"
+                step="1"
+              />
+              {errors.stock && <div className="invalid-feedback">{errors.stock}</div>}
             </div>
 
             <div className="col-12">

@@ -66,9 +66,21 @@ public class OrdenServiceImpl implements OrdenService{
             if (productoCatalogo == null) {
                 throw new RuntimeException("Producto con SKU '" + itemDelCarrito.getSku() + "' no existe.");
             }
+            if (productoCatalogo.getEstado() != null && !productoCatalogo.getEstado().name().equals("ACTIVO")) {
+                throw new RuntimeException("Producto '" + productoCatalogo.getSku() + "' no está disponible para la venta.");
+            }
 
             Long cantidad = itemDelCarrito.getCantidad();
             Long precioDeVenta = productoCatalogo.getPrecio();
+            if (productoCatalogo.getStock() != null) {
+                int stockActual = productoCatalogo.getStock();
+                int req = cantidad == null ? 0 : cantidad.intValue();
+                if (stockActual < req) {
+                    throw new RuntimeException("Stock insuficiente para SKU '" + productoCatalogo.getSku() + "'.");
+                }
+                productoCatalogo.setStock(stockActual - req);
+                productosRepositories.save(productoCatalogo);
+            }
             
             ItemOrden itemDetalle = new ItemOrden(
                 nuevaOrden, 

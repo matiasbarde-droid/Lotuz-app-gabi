@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.proyecto_Lotuz.entities.Categoria;
 import com.example.proyecto_Lotuz.entities.Productos;
+import com.example.proyecto_Lotuz.entities.EstadoProducto;
 import com.example.proyecto_Lotuz.repositories.ProductosRepositories;
 
 @Service
@@ -49,6 +50,12 @@ public class ProductosServiceImpl implements ProductosService{
 		if (productosRepositories.existsBySku(producto.getSku())) {
 			throw new RuntimeException("Ya existe un producto con ese SKU");
 		}
+		if (producto.getStock() == null || producto.getStock() < 0) {
+			producto.setStock(0);
+		}
+		if (producto.getEstado() == null) {
+			producto.setEstado(EstadoProducto.ACTIVO);
+		}
 		return productosRepositories.save(producto);
 	}
 
@@ -70,6 +77,13 @@ public class ProductosServiceImpl implements ProductosService{
 		}
 		if (datosActualizados.getDescripcion() != null) {
 			existente.setDescripcion(datosActualizados.getDescripcion());
+		}
+		if (datosActualizados.getStock() != null) {
+			int s = datosActualizados.getStock();
+			existente.setStock(Math.max(0, s));
+		}
+		if (datosActualizados.getEstado() != null) {
+			existente.setEstado(datosActualizados.getEstado());
 		}
 
 		return productosRepositories.save(existente);

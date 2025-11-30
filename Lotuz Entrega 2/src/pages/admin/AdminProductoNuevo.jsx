@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminNav from '../../components/admin/AdminNav';
+import { api } from '../../api/apiClient';
+import { toast } from 'react-toastify';
 
 const AdminProductoNuevo = () => {
   const navigate = useNavigate();
@@ -29,20 +31,33 @@ const AdminProductoNuevo = () => {
     setSaving(true);
     setError('');
     try {
-      const stored = JSON.parse(localStorage.getItem('lotuz:products') || '[]');
-      const exists = stored.some(p => p.id === productForm.id);
-      const prod = { ...productForm };
-      if (exists) {
-        // si ya existe id, reasignar otro
-        prod.id = `${Date.now()}_${Math.floor(Math.random()*1000)}`;
-      }
-      const updated = [...stored, prod];
-      localStorage.setItem('lotuz:products', JSON.stringify(updated));
-      // Navegar al listado
+      const catMap = {
+        'Mouse': 'MOUSE',
+        'Mousepads': 'MOUSEPAD',
+        'Audífonos': 'AUDIFONOS',
+        'Teclados': 'TECLADO'
+      };
+      const categoriaEnum = catMap[productForm.categoria] || (productForm.categoria || '').toUpperCase();
+      const sku = (productForm.nombre || 'PROD')
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, '-') + '-' + Date.now();
+      const payload = {
+        sku,
+        nombre: productForm.nombre,
+        descripcion: productForm.descripcion,
+        precio: Number(productForm.precio),
+        stock: Number(productForm.stock) || 0,
+        categoria: categoriaEnum,
+        fotoUrl: productForm.imagen,
+        estado: 'ACTIVO'
+      };
+      const res = await api.post('/admin/products', payload, { headers: { 'X-ADMIN': 'true' } });
+      toast.success('Producto creado');
       navigate('/admin/productos');
     } catch (err) {
-      setError('Ocurrió un error al guardar el producto');
       console.error(err);
+      setError(err.response?.data || 'Error al guardar el producto');
+      toast.error('No se pudo crear el producto');
     } finally {
       setSaving(false);
     }
